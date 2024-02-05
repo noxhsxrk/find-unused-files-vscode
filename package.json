@@ -2,7 +2,7 @@
   "name": "find-unused-files",
   "displayName": "Find Unused Files",
   "description": "Find Unused Files in project",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "noxhsxrk",
   "icon": "images/logo.jpeg",
   "engines": {
@@ -18,8 +18,30 @@
       {
         "command": "find-unused-files.FindUnusedFiles",
         "title": "FUF: Find Unused Files"
+      },
+      {
+        "command": "find-unused-files.AddFileTypeToSearchScope",
+        "title": "FUF: Add File Type to Search Scope"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "File Type For Search Scope",
+      "properties": {
+        "find-unused-files.fileType": {
+          "type": "array",
+          "default": [
+            ".json",
+            ".jpg",
+            ".png",
+            ".gif",
+            ".bmp",
+            ".svg",
+            ".webp"
+          ],
+          "description": "File Type For Search Scope"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

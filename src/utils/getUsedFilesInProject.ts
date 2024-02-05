@@ -4,13 +4,13 @@ import path from "path";
 
 import excludedDirectories from "../constants/excludedDirectories";
 import excludedFiles from "../constants/excludedFiles";
-import extensionsToFind from "../constants/extensionsToFind";
 import supportExtensions from "../constants/supportExtensions";
 import getExtensionRegex from "./getExtensionRegex";
+import getConfigFileTypes from "../constants/extensionsToFind";
 
 const processFile = (filePath: string, usedFilesList: string[]): string[] => {
   let content = fs.readFileSync(filePath, "utf-8");
-  let stringRegex = getExtensionRegex(extensionsToFind);
+  let stringRegex = getExtensionRegex(getConfigFileTypes());
   let stringMatch;
   while ((stringMatch = stringRegex.exec(content))) {
     if (vscode.workspace.workspaceFolders) {

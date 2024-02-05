@@ -1,3 +1,3 @@
-const supportExtensions = [".js", ".jsx", ".ts", ".tsx"];
+const supportExtensions = [".js", ".jsx", ".ts", ".tsx", ".css"];
 
 export default supportExtensions;

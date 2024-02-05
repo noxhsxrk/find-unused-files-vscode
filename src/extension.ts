@@ -6,7 +6,7 @@ import getFilesInProjectByExtension from "./utils/getFilesInProjectByExtension";
 import getUsedFilesInProject from "./utils/getUsedFilesInProject";
 
 export const activate = (context: vscode.ExtensionContext): void => {
-  let disposable = vscode.commands.registerCommand(
+  let disposableFind = vscode.commands.registerCommand(
     "find-unused-files.FindUnusedFiles",
     function () {
       const rootPath = vscode.workspace.rootPath;
@@ -32,7 +32,33 @@ export const activate = (context: vscode.ExtensionContext): void => {
     }
   );
 
-  context.subscriptions.push(disposable);
+  let disposableAdd = vscode.commands.registerCommand(
+    "find-unused-files.AddFileTypeToSearchScope",
+    async function () {
+      const fileType = await vscode.window.showInputBox({
+        prompt:
+          'Enter the file types to add separated by space. For example: ".md .txt .log"',
+      });
+
+      if (fileType) {
+        const config = vscode.workspace.getConfiguration("find-unused-files");
+        let fileTypes: string[] = config.get("fileType", []);
+
+        fileTypes = [...fileTypes, ...fileType.split(" ")];
+        await config.update(
+          "fileType",
+          fileTypes,
+          vscode.ConfigurationTarget.Global
+        );
+
+        vscode.window.showInformationMessage(
+          "File types updated successfully."
+        );
+      }
+    }
+  );
+
+  context.subscriptions.push(disposableFind, disposableAdd);
 };
 
 export function deactivate() {}

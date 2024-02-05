@@ -1,11 +1,10 @@
-const extensionsToFind = [
-  ".json",
-  ".jpg",
-  ".png",
-  ".gif",
-  ".bmp",
-  ".svg",
-  ".webp",
-];
+import * as vscode from "vscode";
 
-export default extensionsToFind;
+const getConfigFileTypes = (): string[] => {
+  const config = vscode.workspace.getConfiguration("find-unused-files");
+  const extensionsToFind: string[] = config.get("fileType", []);
+
+  return extensionsToFind;
+};
+
+export default getConfigFileTypes;

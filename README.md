@@ -16,9 +16,19 @@ After installation, you can use the extension by following these steps:
 
 The extension will then search your project for unused files and display a message with the results. The results will also be saved in a file named `unused-files-result.log` in your project root directory.
 
+Additionally, you can add more file types for the extension to consider while searching for unused files:
+
+1. Use the shortcut `Cmd+Shift+P` on Mac or `Ctrl+Shift+P` on PC to open the Command Palette.
+2. Type "`FUF: Add File Type to Search Scope`" and select the command.
+3. Enter the file types you want to add, separated by spaces. For example: ".md .txt .log"
+
+The extension will then update the file types it searches for in your project.
+
+You can also manually add or remove file types in the VSCode settings. Go to File > Preferences > Settings, search for "Find Unused Files", and then add or remove file types in the "File Type For Search Scope" field.
+
 ## Supported Projects
 
-Currently, this extension supports JavaScript (.js, .jsx) and TypeScript (.ts, .tsx) projects.
+Currently, this extension supports .css, JavaScript (.js, .jsx) and TypeScript (.ts, .tsx) projects for searching.
 
 ## File Types
 
@@ -31,3 +41,5 @@ This extension can search for the following file types:
 .bmp
 .svg
 .webp
+
+You can add more file types using the "`FUF: Add File Type to Search Scope`" command as well as through the VSCode settings.

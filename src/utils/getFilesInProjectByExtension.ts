@@ -2,8 +2,8 @@ import fs from "fs";
 import path from "path";
 
 import excludedDirectories from "../constants/excludedDirectories";
-import extensionsToFind from "../constants/extensionsToFind";
 import excludedFiles from "../constants/excludedFiles";
+import getConfigFileTypes from "../constants/extensionsToFind";
 
 const getFilesInProjectByExtension = (
   dir: string,
@@ -17,7 +17,7 @@ const getFilesInProjectByExtension = (
       }
     } else {
       if (
-        extensionsToFind.includes(path.extname(file)) &&
+        getConfigFileTypes().includes(path.extname(file)) &&
         !excludedFiles.includes(file)
       ) {
         fileList.push(file);
