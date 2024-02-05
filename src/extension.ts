@@ -1,9 +1,7 @@
 import * as vscode from "vscode";
 import fs from "fs";
 import path from "path";
-import excludedDirectories from "./constants/excludedDirectories";
-import extensionsToFind from "./constants/extensionsToFind";
-import excludedFiles from "./constants/excludedFiles";
+
 import getFilesInProjectByExtension from "./utils/getFilesInProjectByExtension";
 import getUsedFilesInProject from "./utils/getUsedFilesInProject";
 

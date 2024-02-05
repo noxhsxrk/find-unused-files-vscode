@@ -1,11 +1,12 @@
 import * as vscode from "vscode";
 import fs from "fs";
 import path from "path";
+
 import excludedDirectories from "../constants/excludedDirectories";
 import excludedFiles from "../constants/excludedFiles";
 import extensionsToFind from "../constants/extensionsToFind";
-import getExtensionRegex from "./getExtensionRegex";
 import supportExtensions from "../constants/supportExtensions";
+import getExtensionRegex from "./getExtensionRegex";
 
 const processFile = (filePath: string, usedFilesList: string[]): string[] => {
   let content = fs.readFileSync(filePath, "utf-8");
