@@ -1,8 +1,10 @@
 {
   "name": "find-unused-files",
   "displayName": "Find Unused Files",
-  "description": "",
+  "description": "Find Unused Files in project",
   "version": "0.0.1",
+  "publisher": "noxhsxrk",
+  "icon": "images/logo.jpeg",
   "engines": {
     "vscode": "^1.86.0"
   },
@@ -37,5 +39,9 @@
     "typescript": "^5.3.3",
     "@vscode/test-cli": "^0.0.4",
     "@vscode/test-electron": "^2.3.8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/noxhsxrk/find-unused-files-vscode"
   }
 }
