@@ -1,5 +1,9 @@
 # Change Log
 
+## [v0.0.5]
+
+- adjust delay
+
 ## [v0.0.4]
 
 - Add Result Panel instead of log file

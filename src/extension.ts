@@ -75,7 +75,7 @@ export const activate = (context: vscode.ExtensionContext): void => {
             unusedFiles.push(file);
           }
 
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 1));
         }
 
         progress.hide();
@@ -84,7 +84,7 @@ export const activate = (context: vscode.ExtensionContext): void => {
           vscode.window.showInformationMessage("No unsued files found 😃");
         } else {
           if (currentPanel) {
-            currentPanel.dispose(); // Close existing panel if open
+            currentPanel.dispose();
           }
 
           currentPanel = vscode.window.createWebviewPanel(
@@ -98,7 +98,7 @@ export const activate = (context: vscode.ExtensionContext): void => {
 
           currentPanel.webview.html = getWebViewContent(unusedFiles);
           currentPanel.onDidDispose(() => {
-            currentPanel = undefined; // Reset currentPanel when the panel is closed
+            currentPanel = undefined;
           });
 
           currentPanel.webview.onDidReceiveMessage((message) => {
