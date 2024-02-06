@@ -1,64 +1,119 @@
 import * as vscode from "vscode";
-import fs from "fs";
-import path from "path";
 
 import getFilesInProjectByExtension from "./utils/getFilesInProjectByExtension";
 import getUsedFilesInProject from "./utils/getUsedFilesInProject";
 
+let currentPanel: vscode.WebviewPanel | undefined;
+
 export const activate = (context: vscode.ExtensionContext): void => {
   let disposableFind = vscode.commands.registerCommand(
     "find-unused-files.FindUnusedFiles",
-    function () {
+    async function () {
       const rootPath = vscode.workspace.rootPath;
 
       if (rootPath) {
         let files = getFilesInProjectByExtension(rootPath, []);
         let usedResources = getUsedFilesInProject(rootPath, []);
 
-        let unusedFiles = files.filter(
-          (file: string) =>
-            !usedResources.some((usedFile) => usedFile.includes(file))
-        );
+        let unusedFiles = [];
 
-        vscode.window.showInformationMessage(
-          `Unused files: ${unusedFiles.join(", ")}`
+        const progress = vscode.window.createStatusBarItem(
+          vscode.StatusBarAlignment.Left,
+          -1000
         );
+        progress.text = "Finding unused files...";
+        progress.show();
 
-        fs.writeFileSync(
-          path.join(rootPath, "unused-files-result.log"),
-          unusedFiles.join("\n")
-        );
+        for (const file of files) {
+          progress.text = `Finding unused files: (${file})`;
+
+          const isUnused = !usedResources.some((usedFile) =>
+            usedFile.includes(file)
+          );
+
+          if (isUnused) {
+            unusedFiles.push(file);
+          }
+
+          await new Promise((resolve) => setTimeout(resolve, 100));
+        }
+
+        progress.hide();
+
+        if (!unusedFiles.length) {
+          vscode.window.showInformationMessage("No unsued files found 😃");
+        } else {
+          if (currentPanel) {
+            currentPanel.dispose(); // Close existing panel if open
+          }
+
+          currentPanel = vscode.window.createWebviewPanel(
+            "unusedFiles",
+            "Unused Files",
+            vscode.ViewColumn.Beside,
+            {
+              enableScripts: true,
+            }
+          );
+
+          currentPanel.webview.html = getWebViewContent(unusedFiles);
+          currentPanel.onDidDispose(() => {
+            currentPanel = undefined; // Reset currentPanel when the panel is closed
+          });
+
+          currentPanel.webview.onDidReceiveMessage((message) => {
+            if (message.command === "rerun") {
+              vscode.commands.executeCommand(
+                "find-unused-files.FindUnusedFiles"
+              );
+            }
+          });
+        }
       }
     }
   );
 
-  let disposableAdd = vscode.commands.registerCommand(
-    "find-unused-files.AddFileTypeToSearchScope",
-    async function () {
-      const fileType = await vscode.window.showInputBox({
-        prompt:
-          'Enter the file types to add separated by space. For example: ".md .txt .log"',
-      });
-
-      if (fileType) {
-        const config = vscode.workspace.getConfiguration("find-unused-files");
-        let fileTypes: string[] = config.get("fileType", []);
-
-        fileTypes = [...fileTypes, ...fileType.split(" ")];
-        await config.update(
-          "fileType",
-          fileTypes,
-          vscode.ConfigurationTarget.Global
-        );
-
-        vscode.window.showInformationMessage(
-          "File types updated successfully."
-        );
-      }
-    }
-  );
-
-  context.subscriptions.push(disposableFind, disposableAdd);
+  context.subscriptions.push(disposableFind);
 };
 
 export function deactivate() {}
+
+function getWebViewContent(unusedFiles: string[]): string {
+  const fileItems = unusedFiles
+    .map((file) => `<li><span>${file}</span></li>`)
+    .join("");
+
+  return `
+    <html>
+      <head>
+        <style>
+          ul {
+            list-style-type: none;
+            padding: 0;
+          }
+          li {
+            margin-bottom: 5px;
+          }
+          .rerun {
+            color: #007acc;
+            cursor: pointer;
+          }
+        </style>
+      </head>
+      <body>
+        <h1>Unused Files:</h1>
+        <span class="rerun" onclick="rerunCommand()">Rerun</span>
+        <ul>
+          ${fileItems}
+        </ul>
+        <script>
+          const vscode = acquireVsCodeApi();
+
+          function rerunCommand() {
+            vscode.postMessage({ command: 'rerun' });
+          }
+        </script>
+      </body>
+    </html>
+  `;
+}

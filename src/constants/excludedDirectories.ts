@@ -7,6 +7,8 @@ const excludedDirectories = [
   "build",
   "coverage",
   "coverage_playwright",
+  ".next",
+  ".github",
 ];
 
 export default excludedDirectories;
