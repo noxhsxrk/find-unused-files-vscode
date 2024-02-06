@@ -3,6 +3,46 @@ import * as vscode from "vscode";
 import getFilesInProjectByExtension from "./utils/getFilesInProjectByExtension";
 import getUsedFilesInProject from "./utils/getUsedFilesInProject";
 
+const getWebViewContent = (unusedFiles: string[]): string => {
+  const fileItems = unusedFiles
+    .map((file) => `<li><span>${file}</span></li>`)
+    .join("");
+
+  return `
+    <html>
+      <head>
+        <style>
+          ul {
+            list-style-type: none;
+            padding: 0;
+          }
+          li {
+            margin-bottom: 5px;
+          }
+          .rerun {
+            color: #007acc;
+            cursor: pointer;
+          }
+        </style>
+      </head>
+      <body>
+        <h1>Unused Files:</h1>
+        <span class="rerun" onclick="rerunCommand()">Rerun</span>
+        <ul>
+          ${fileItems}
+        </ul>
+        <script>
+          const vscode = acquireVsCodeApi();
+
+          function rerunCommand() {
+            vscode.postMessage({ command: 'rerun' });
+          }
+        </script>
+      </body>
+    </html>
+  `;
+};
+
 let currentPanel: vscode.WebviewPanel | undefined;
 
 export const activate = (context: vscode.ExtensionContext): void => {
@@ -77,43 +117,3 @@ export const activate = (context: vscode.ExtensionContext): void => {
 };
 
 export function deactivate() {}
-
-function getWebViewContent(unusedFiles: string[]): string {
-  const fileItems = unusedFiles
-    .map((file) => `<li><span>${file}</span></li>`)
-    .join("");
-
-  return `
-    <html>
-      <head>
-        <style>
-          ul {
-            list-style-type: none;
-            padding: 0;
-          }
-          li {
-            margin-bottom: 5px;
-          }
-          .rerun {
-            color: #007acc;
-            cursor: pointer;
-          }
-        </style>
-      </head>
-      <body>
-        <h1>Unused Files:</h1>
-        <span class="rerun" onclick="rerunCommand()">Rerun</span>
-        <ul>
-          ${fileItems}
-        </ul>
-        <script>
-          const vscode = acquireVsCodeApi();
-
-          function rerunCommand() {
-            vscode.postMessage({ command: 'rerun' });
-          }
-        </script>
-      </body>
-    </html>
-  `;
-}
