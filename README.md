@@ -28,7 +28,7 @@ You can also manually add or remove file types in the VSCode settings. Go to Fil
 
 ## Supported Projects
 
-Currently, this extension supports .css, JavaScript (.js, .jsx) and TypeScript (.ts, .tsx) projects for searching.
+Currently, this extension supports .css, JavaScript (.js, .jsx) and TypeScript (.ts, .tsx) and Astro (.astro) projects for searching.
 
 ## File Types
 
